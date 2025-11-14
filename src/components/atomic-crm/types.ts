@@ -24,6 +24,8 @@ export type SalesFormData = {
   last_name: string;
   administrator: boolean;
   disabled: boolean;
+  beetexting_agent_email?: string | null;
+  ringcentral_extension?: string | null;
 };
 
 export type Sale = {
@@ -33,6 +35,8 @@ export type Sale = {
   avatar?: RAFile;
   disabled?: boolean;
   user_id: string;
+  beetexting_agent_email?: string | null;
+  ringcentral_extension?: string | null;
 
   /**
    * This is a copy of the user's email, to make it easier to handle by react admin

@@ -16,6 +16,16 @@ export function SalesInputs() {
         validate={[required(), email()]}
         helperText={false}
       />
+      <TextInput
+        source="beetexting_agent_email"
+        label="Beetexting Agent Email"
+        helperText="Optional: address registered with Beetexting"
+      />
+      <TextInput
+        source="ringcentral_extension"
+        label="RingCentral Extension"
+        helperText="Optional: numeric extension used for call logging"
+      />
       <BooleanInput
         source="administrator"
         readOnly={record?.id === identity?.id}

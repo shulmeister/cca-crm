@@ -112,6 +112,7 @@ The Colorado CareAssist deployment layers real-time communications on top of Ato
 - **Outbound:** The `beetexting-send-sms` Supabase Edge Function authenticates with Beetexting (client credentials + API key), sends texts via `/message/sendsms/{agentEmail}`, and logs a note on the contact timeline.
 - **Inbound:** The `beetexting-webhook` Edge Function ingests Beetexting webhook events (contacts + inbound SMS) and stores them as notes, auto-creating contacts when needed.
 - **Front-end:** Contacts now include a **Call** and **Send SMS** action; SMS goes through the edge function so the UI never hits Beetexting directly.
+- **Per-user config:** In `Settings → Sales`, each rep now has `Beetexting Agent Email`. Populate this with the agent email defined in Beetexting’s API Connect page so their messages route through the correct mailbox.
 
 Configure the Supabase project with:
 
@@ -126,11 +127,11 @@ npx supabase secrets set \
   BEETEXTING_WEBHOOK_SECRET=choose-a-random-string
 ```
 
-Then deploy the helper functions:
+Then run the migration + deploy the helper functions:
 
 ```
 npx supabase db push --include-roles --password <SUPABASE_DB_PASSWORD>
-npx supabase functions deploy beetexting-send-sms beetexting-webhook
+npx supabase functions deploy beetexting-send-sms beetexting-webhook ringcentral-webhook
 ```
 
 Register a webhook subscription for each sales rep email (e.g. `jason@coloradocareassist.com`) using Betexting’s `POST /webhook/subscription/{agentEmail}`. Point the `uri` to your Supabase function URL (`https://<project>.functions.supabase.co/beetexting-webhook`) and send your shared `BEETEXTING_WEBHOOK_SECRET` in the `x-api-key` header when configuring Beetexting so every inbound SMS is logged.
@@ -149,3 +150,9 @@ VITE_RINGCENTRAL_DEFAULT_TAB=messages
 ```
 
 Once those values are present, the floating RingCentral pane appears automatically on desktop widths while preserving Atomic CRM’s layout.
+
+To log calls coming from RingCentral:
+
+- Fill the **RingCentral Extension** column for each sales user in `Settings → Sales`.
+- Add a `?token=<RINGCENTRAL_WEBHOOK_TOKEN>` query string to your RingCentral subscription target and point it to `https://<project>.functions.supabase.co/ringcentral-webhook`.
+- Subscribe to the `telephony/sessions` event stream inside the RingCentral Developer Console so every inbound/outbound call produces a contact note automatically.

@@ -53,6 +53,14 @@ export function SalesList() {
         <DataTable.Col source="first_name" />
         <DataTable.Col source="last_name" />
         <DataTable.Col source="email" />
+        <DataTable.Col
+          source="beetexting_agent_email"
+          label="Beetexting Email"
+        />
+        <DataTable.Col
+          source="ringcentral_extension"
+          label="RingCentral Ext."
+        />
         <DataTable.Col label={false}>
           <OptionsField />
         </DataTable.Col>

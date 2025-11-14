@@ -50,6 +50,9 @@ export const ContactActions = () => {
   );
 
   const fallbackPhone = record?.phone_jsonb?.[0]?.number ?? "";
+  const beetextingEmail =
+    (identity as any)?.beetexting_agent_email || (identity as any)?.email;
+  const smsEnabled = Boolean(beetextingEmail);
 
   if (!record) {
     return null;
@@ -68,7 +71,19 @@ export const ContactActions = () => {
     }
 
     const dialable = toE164(normalizedSelection) ?? normalizedSelection;
-    window.location.href = `tel:${dialable}`;
+    const payload = { type: "rc-call", phoneNumber: dialable };
+    try {
+      const iframe = document.getElementById(
+        "rc-widget-sidebar",
+      ) as HTMLIFrameElement | null;
+      iframe?.contentWindow?.postMessage(payload, "*");
+      window.postMessage(payload, "*");
+      if (!iframe?.contentWindow) {
+        window.location.href = `tel:${dialable}`;
+      }
+    } catch {
+      window.location.href = `tel:${dialable}`;
+    }
 
     if (!identity?.id) return;
     try {
@@ -90,6 +105,12 @@ export const ContactActions = () => {
       notify("No phone number available for this contact", { type: "warning" });
       return;
     }
+    if (!smsEnabled || !beetextingEmail) {
+      notify("Set your Beetexting agent email on your profile to send SMS.", {
+        type: "warning",
+      });
+      return;
+    }
     if (message.trim().length < MIN_MESSAGE_LENGTH) {
       notify("Please type a message", { type: "warning" });
       return;
@@ -103,7 +124,8 @@ export const ContactActions = () => {
           to: normalizedSelection,
           text: message.trim(),
           contactId: record.id,
-          agentEmail: identity?.email,
+          agentEmail: beetextingEmail,
+          salesId: identity?.id,
         },
       });
 
@@ -142,7 +164,12 @@ export const ContactActions = () => {
           <Button
             variant="secondary"
             className="justify-start gap-2"
-            disabled={!phones.length && !fallbackPhone}
+            title={
+              smsEnabled
+                ? undefined
+                : "Add your Beetexting agent email in Settings → Sales"
+            }
+            disabled={(!phones.length && !fallbackPhone) || !smsEnabled}
           >
             <MessageCircle className="h-4 w-4" />
             Send SMS

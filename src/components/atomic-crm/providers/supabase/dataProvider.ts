@@ -145,8 +145,16 @@ const dataProviderWithCustomMethods = {
     id: Identifier,
     data: Partial<Omit<SalesFormData, "password">>,
   ) {
-    const { email, first_name, last_name, administrator, avatar, disabled } =
-      data;
+    const {
+      email,
+      first_name,
+      last_name,
+      administrator,
+      avatar,
+      disabled,
+      beetexting_agent_email,
+      ringcentral_extension,
+    } = data;
 
     const { data: sale, error } = await supabase.functions.invoke<Sale>(
       "users",
@@ -160,6 +168,8 @@ const dataProviderWithCustomMethods = {
           administrator,
           disabled,
           avatar,
+          beetexting_agent_email,
+          ringcentral_extension,
         },
       },
     );

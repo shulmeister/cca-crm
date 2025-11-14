@@ -15,6 +15,7 @@ const TOKEN_URL =
 type SendSmsPayload = {
   agentEmail?: string;
   contactId?: number;
+  salesId?: number;
   to: string;
   text: string;
 };
@@ -72,21 +73,34 @@ const getAccessToken = async () => {
   return token.access_token;
 };
 
+const getSalesId = async (
+  salesId?: number,
+  salesEmail?: string,
+): Promise<number | null> => {
+  if (salesId) {
+    return salesId;
+  }
+  if (!salesEmail) return null;
+  const { data: byAgent } = await supabaseAdmin
+    .from("sales")
+    .select("id")
+    .eq("beetexting_agent_email", salesEmail)
+    .maybeSingle();
+  if (byAgent?.id) return byAgent.id;
+  const { data: byEmail } = await supabaseAdmin
+    .from("sales")
+    .select("id")
+    .eq("email", salesEmail)
+    .maybeSingle();
+  return byEmail?.id ?? null;
+};
+
 const logContactNote = async (
   contactId: number,
   text: string,
-  salesEmail?: string,
+  salesId: number | null,
 ) => {
   if (!contactId) return;
-  let salesId: number | null = null;
-  if (salesEmail) {
-    const { data } = await supabaseAdmin
-      .from("sales")
-      .select("id")
-      .eq("email", salesEmail)
-      .maybeSingle();
-    salesId = data?.id ?? null;
-  }
 
   await supabaseAdmin.from("contactNotes").insert({
     contact_id: contactId,
@@ -124,15 +138,19 @@ Deno.serve(async (req) => {
 
     const accessToken = await getAccessToken();
 
-    const params = new URLSearchParams({
+  const salesId = await getSalesId(payload.salesId, payload.agentEmail);
+
+  const params = new URLSearchParams({
       from: normalizedFrom,
       to: normalizedTo,
       text: payload.text,
     });
 
-    const path = payload.agentEmail
-      ? `/message/sendsms/${encodeURIComponent(payload.agentEmail)}`
-      : "/message/sendsms";
+    if (!payload.agentEmail) {
+      return new Response("Missing agent email", { status: 400 });
+    }
+
+    const path = `/message/sendsms/${encodeURIComponent(payload.agentEmail)}`;
 
     const response = await fetch(`${BASE_URL}${path}?${params.toString()}`, {
       method: "POST",
@@ -151,7 +169,7 @@ Deno.serve(async (req) => {
       await logContactNote(
         payload.contactId,
         `[SMS outbound] ${payload.text}`,
-        payload.agentEmail,
+        salesId,
       );
     }
 

@@ -41,9 +41,46 @@ async function updateSaleAvatar(user_id: string, avatar: string) {
   return sales.at(0);
 }
 
+async function updateSaleIntegrations(
+  user_id: string,
+  integrations: {
+    beetexting_agent_email?: string | null;
+    ringcentral_extension?: string | null;
+  },
+) {
+  const update: Record<string, string | null> = {};
+  if ("beetexting_agent_email" in integrations) {
+    update.beetexting_agent_email =
+      integrations.beetexting_agent_email ?? null;
+  }
+  if ("ringcentral_extension" in integrations) {
+    update.ringcentral_extension = integrations.ringcentral_extension ?? null;
+  }
+
+  if (!Object.keys(update).length) return;
+
+  const { error } = await supabaseAdmin
+    .from("sales")
+    .update(update)
+    .eq("user_id", user_id);
+
+  if (error) {
+    console.error("Error updating sale integrations:", error);
+    throw error;
+  }
+}
+
 async function inviteUser(req: Request, currentUserSale: any) {
-  const { email, password, first_name, last_name, disabled, administrator } =
-    await req.json();
+  const {
+    email,
+    password,
+    first_name,
+    last_name,
+    disabled,
+    administrator,
+    beetexting_agent_email,
+    ringcentral_extension,
+  } = await req.json();
 
   if (!currentUserSale.administrator) {
     return createErrorResponse(401, "Not Authorized");
@@ -70,6 +107,10 @@ async function inviteUser(req: Request, currentUserSale: any) {
 
   try {
     await updateSaleDisabled(data.user.id, disabled);
+    await updateSaleIntegrations(data.user.id, {
+      beetexting_agent_email,
+      ringcentral_extension,
+    });
     const sale = await updateSaleAdministrator(data.user.id, administrator);
 
     return new Response(
@@ -95,6 +136,8 @@ async function patchUser(req: Request, currentUserSale: any) {
     avatar,
     administrator,
     disabled,
+    beetexting_agent_email,
+    ringcentral_extension,
   } = await req.json();
   const { data: sale } = await supabaseAdmin
     .from("sales")
@@ -126,6 +169,11 @@ async function patchUser(req: Request, currentUserSale: any) {
   if (avatar) {
     await updateSaleAvatar(data.user.id, avatar);
   }
+
+  await updateSaleIntegrations(data.user.id, {
+    beetexting_agent_email,
+    ringcentral_extension,
+  });
 
   // Only administrators can update the administrator and disabled status
   if (!currentUserSale.administrator) {

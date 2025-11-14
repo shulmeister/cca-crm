@@ -50,7 +50,7 @@ const findOrCreateContact = async (
   salesEmail?: string,
 ) => {
   const { data: existingContact } = await supabaseAdmin
-    .rpc("find_contact_by_phone", { phone })
+    .rpc("find_contact_by_phone", { p_phone: phone })
     .maybeSingle();
 
   if (existingContact) {
@@ -59,12 +59,21 @@ const findOrCreateContact = async (
 
   let salesId: number | null = null;
   if (salesEmail) {
-    const { data } = await supabaseAdmin
+    const { data: byAgent } = await supabaseAdmin
       .from("sales")
       .select("id")
-      .eq("email", salesEmail)
+      .eq("beetexting_agent_email", salesEmail)
       .maybeSingle();
-    salesId = data?.id ?? null;
+    if (byAgent?.id) {
+      salesId = byAgent.id;
+    } else {
+      const { data: byEmail } = await supabaseAdmin
+        .from("sales")
+        .select("id")
+        .eq("email", salesEmail)
+        .maybeSingle();
+      salesId = byEmail?.id ?? null;
+    }
   }
 
   const [firstName = "SMS", lastName = "Lead"] = (displayName ?? "")
