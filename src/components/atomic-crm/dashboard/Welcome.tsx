@@ -7,13 +7,14 @@ export const Welcome = () => (
     </CardHeader>
     <CardContent className="px-4">
       <p className="text-sm mb-4">
+        Colorado CareAssist CRM is built on top of{" "}
         <a
           href="https://marmelab.com/atomic-crm"
           className="underline hover:no-underline"
         >
-          Atomic CRM
+          Marmelab's Atomic CRM template
         </a>{" "}
-        is a template designed to help you quickly build your own CRM.
+        to deliver a home-care focused workspace.
       </p>
       <p className="text-sm mb-4">
         This demo runs on a mock API, so you can explore and modify the data. It
@@ -27,7 +28,8 @@ export const Welcome = () => (
         >
           shadcn-admin-kit
         </a>
-        , Atomic CRM is fully open-source. You can find the code at{" "}
+        , the entire solution remains open-source. You can explore the
+        underlying template at{" "}
         <a
           href="https://github.com/marmelab/atomic-crm"
           className="underline hover:no-underline"

@@ -34,18 +34,19 @@ const Header = () => {
             <Link
               to="/"
               className="flex items-center gap-2 text-secondary-foreground no-underline"
+              aria-label={title}
             >
               <img
-                className="[.light_&]:hidden h-6"
+                className="[.light_&]:hidden h-8 w-8"
                 src={darkModeLogo}
-                alt={title}
+                alt=""
               />
               <img
-                className="[.dark_&]:hidden h-6"
+                className="[.dark_&]:hidden h-8 w-8"
                 src={lightModeLogo}
-                alt={title}
+                alt=""
               />
-              <h1 className="text-xl font-semibold">{title}</h1>
+              <span className="sr-only">{title}</span>
             </Link>
             <div>
               <nav className="flex">

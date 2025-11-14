@@ -1,7 +1,6 @@
-<svg width="160" height="32" viewBox="0 0 160 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="6" fill="#1F2937"/>
-  <path d="M11.5 20C11.5 16.9624 13.9624 14.5 17 14.5H20.5V11H17C11.7533 11 7.5 15.2533 7.5 20.5C7.5 25.7467 11.7533 30 17 30H20.5V26.5H17C13.9624 26.5 11.5 24.0376 11.5 21V20Z" fill="#C4B5FD"/>
-  <path d="M24.5 12C24.5 15.5899 21.5899 18.5 18 18.5H14.5V22H18C21.5899 22 24.5 24.9101 24.5 28.5V30H28V28.5C28 21.5964 22.4036 16 15.5 16H14.5V12H15.5C22.4036 12 28 6.40356 28 0H24.5V1.5C24.5 5.08985 21.5899 8 18 8H14.5V11.5H18C21.5899 11.5 24.5 14.4101 24.5 18V12Z" fill="#C4B5FD"/>
-  <text x="42" y="22" fill="#111827" font-family="Inter, 'Segoe UI', sans-serif" font-size="16" font-weight="600">Colorado CareAssist</text>
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="48" height="48" rx="12" fill="#1F2937"/>
+  <path d="M16 30c0-4.418 3.582-8 8-8h5v-5h-5c-7.18 0-13 5.82-13 13s5.82 13 13 13h5v-5h-5c-4.418 0-8-3.582-8-8z" fill="#C4B5FD"/>
+  <path d="M32 17c0 4.418-3.582 8-8 8h-4v5h4c4.418 0 8 3.582 8 8v3h5v-3c0-7.18-5.82-13-13-13h-4v-5h4c7.18 0 13-5.82 13-13V4h-5v1c0 4.418-3.582 8-8 8z" fill="#C4B5FD"/>
 </svg>
 

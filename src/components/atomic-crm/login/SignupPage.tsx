@@ -83,7 +83,9 @@ export const SignupPage = () => {
       </div>
       <div className="h-full">
         <div className="max-w-sm mx-auto h-full flex flex-col justify-center gap-4">
-          <h1 className="text-2xl font-bold mb-4">Welcome to Atomic CRM</h1>
+          <h1 className="text-2xl font-bold mb-4">
+            Welcome to {title ?? "Colorado CareAssist CRM"}
+          </h1>
           <p className="text-base mb-4">
             Create the first user account to complete the setup.
           </p>

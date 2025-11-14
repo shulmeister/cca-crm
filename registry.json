@@ -6,8 +6,8 @@
     {
       "name": "atomic-crm",
       "type": "registry:block",
-      "title": "Atomic CRM",
-      "description": "A fully fledged CRM application built with Shadcn Admin Kit",
+      "title": "Colorado CareAssist CRM",
+      "description": "A fully fledged CRM (built on Atomic CRM and Shadcn Admin Kit)",
       "registryDependencies": [
         "https://marmelab.com/shadcn-admin-kit/r/admin.json"
       ],
