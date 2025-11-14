@@ -102,3 +102,50 @@ Atomic CRM components are published as a Shadcn Registry file:
 ## License
 
 This project is licensed under the MIT License, courtesy of [Marmelab](https://marmelab.com). See the [LICENSE.md](./LICENSE.md) file for details.
+
+## Colorado CareAssist Extensions
+
+The Colorado CareAssist deployment layers real-time communications on top of Atomic CRM while keeping the original UI intact.
+
+### Beetexting SMS
+
+- **Outbound:** The `beetexting-send-sms` Supabase Edge Function authenticates with Beetexting (client credentials + API key), sends texts via `/message/sendsms/{agentEmail}`, and logs a note on the contact timeline.
+- **Inbound:** The `beetexting-webhook` Edge Function ingests Beetexting webhook events (contacts + inbound SMS) and stores them as notes, auto-creating contacts when needed.
+- **Front-end:** Contacts now include a **Call** and **Send SMS** action; SMS goes through the edge function so the UI never hits Beetexting directly.
+
+Configure the Supabase project with:
+
+```
+npx supabase secrets set \
+  BEETEXTING_CLIENT_ID=... \
+  BEETEXTING_CLIENT_SECRET=... \
+  BEETEXTING_API_KEY=... \
+  BEETEXTING_FROM_NUMBER=+1XXXXXXXXXX \
+  BEETEXTING_API_URL=https://connect.beetexting.com/prod \
+  BEETEXTING_AUTH_URL=https://auth.beetexting.com/oauth2/token/ \
+  BEETEXTING_WEBHOOK_SECRET=choose-a-random-string
+```
+
+Then deploy the helper functions:
+
+```
+npx supabase db push --include-roles --password <SUPABASE_DB_PASSWORD>
+npx supabase functions deploy beetexting-send-sms beetexting-webhook
+```
+
+Register a webhook subscription for each sales rep email (e.g. `jason@coloradocareassist.com`) using Betexting’s `POST /webhook/subscription/{agentEmail}`. Point the `uri` to your Supabase function URL (`https://<project>.functions.supabase.co/beetexting-webhook`) and send your shared `BEETEXTING_WEBHOOK_SECRET` in the `x-api-key` header when configuring Beetexting so every inbound SMS is logged.
+
+### RingCentral Embeddable Workspace
+
+The CRM now renders the same RingCentral widget used across the CareAssist portal so reps can call or text without leaving the dashboard. Add the following build-time variables (Heroku config vars or `.env.production.local`):
+
+```
+VITE_RINGCENTRAL_CLIENT_ID=<browser-app-client-id>
+VITE_RINGCENTRAL_APP_SERVER=https://platform.ringcentral.com
+VITE_RINGCENTRAL_APP_URL=https://apps.ringcentral.com/integration/ringcentral-embeddable/latest/app.html
+VITE_RINGCENTRAL_ADAPTER_URL=https://apps.ringcentral.com/integration/ringcentral-embeddable/latest/adapter.js
+VITE_RINGCENTRAL_REDIRECT_URI=https://cca-crm-cd555628f933.herokuapp.com/auth-callback.html
+VITE_RINGCENTRAL_DEFAULT_TAB=messages
+```
+
+Once those values are present, the floating RingCentral pane appears automatically on desktop widths while preserving Atomic CRM’s layout.

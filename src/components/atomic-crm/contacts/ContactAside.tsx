@@ -18,6 +18,7 @@ import { AsideSection } from "../misc/AsideSection";
 import { useConfigurationContext } from "../root/ConfigurationContext";
 import { SaleName } from "../sales/SaleName";
 import type { Contact } from "../types";
+import { ContactActions } from "./ContactActions";
 
 export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
   const { contactGender } = useConfigurationContext();
@@ -32,6 +33,10 @@ export const ContactAside = ({ link = "edit" }: { link?: "edit" | "show" }) => {
           <ShowButton label="Show Contact" />
         )}
       </div>
+
+      <AsideSection title="Engage">
+        <ContactActions />
+      </AsideSection>
 
       <AsideSection title="Personal info">
         <ArrayField source="email_jsonb">
