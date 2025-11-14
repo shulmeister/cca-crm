@@ -47,6 +47,9 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
+  preview: {
+    allowedHosts: ["cca-crm-cd555628f933.herokuapp.com"],
+  },
   resolve: {
     preserveSymlinks: true,
     alias: {
