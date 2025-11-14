@@ -363,6 +363,10 @@
           "type": "registry:component"
         },
         {
+          "path": "src/components/atomic-crm/lib/phone.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "src/components/atomic-crm/layout/TopToolbar.tsx",
           "type": "registry:component"
         },
@@ -376,6 +380,10 @@
         },
         {
           "path": "src/components/atomic-crm/layout/FormToolbar.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/integrations/RingCentralWidget.tsx",
           "type": "registry:component"
         },
         {
@@ -548,6 +556,10 @@
         },
         {
           "path": "src/components/atomic-crm/contacts/ContactAside.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/components/atomic-crm/contacts/ContactActions.tsx",
           "type": "registry:component"
         },
         {
